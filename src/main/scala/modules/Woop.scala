@@ -14,13 +14,13 @@ class Woop extends Module with SimpleMessage {
   def message(channel: Channel, message: String) {
     val response = message match {
       case WoopCount(num) => woop(num.toFloat)
-	  case VariableWoop(num) => woop(num.length + 2)
-	  case VariableWoopCount(num) => woop(num.toFloat)
-	  case DefaultWoop() => woop(10)
-	  case _ => ""
-	}
-	
-	channel.say(response)
+      case VariableWoop(num) => woop(num.length + 2)
+      case VariableWoopCount(num) => woop(num.toFloat)
+      case DefaultWoop() => woop(10)
+      case _ => ""
+    }
+    
+    channel.say(response)
   }
   
   def woop(num: Float) = {

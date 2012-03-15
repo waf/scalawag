@@ -11,7 +11,7 @@ trait SimpleMessage extends Module {
   def message(channel: Channel, message: String)
   
   def commands = {
-	case msg : MessageEvent =>
-	  message(msg.getChannel(), msg.getMessage())
+    case msg : MessageEvent =>
+      message(msg.getChannel(), msg.getMessage())
   }
 }
