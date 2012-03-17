@@ -44,7 +44,7 @@ class Run extends Module with SimpleMessage {
 	  if(!error.isEmpty)
 	    channel.say(Colors.RED + error.lines.toList.last)
 	  else if (!output.isEmpty)
-	    channel.say(Colors.GREEN + output)
+	    channel.say(Colors.GREEN + output.lines.toList.head)
 	})
   }
 }
