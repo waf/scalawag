@@ -17,8 +17,6 @@ class EventRouter extends Actor with IRCEventListener {
       react {
         case e: ConnectionCompleteEvent =>
           Scalawag.initialChannels.foreach(e.getSession().join(_))
-        case e: JoinCompleteEvent =>
-          e.getChannel().say("hi")
         case msg: MessageEvent  => 
           modules.foreach(mod => mod ! msg)
       }
