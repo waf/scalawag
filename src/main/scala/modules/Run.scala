@@ -14,13 +14,12 @@ class Run extends Module with SimpleMessage {
   val api = "http://api.dan.co.jp/lleval.cgi"
   
   val friendlyNames = Map(
-      "python" -> "py",
-      "python3" -> "py3",
-      "ruby" -> "rb",
-      "perl" -> "pl",
-      "javascript" -> "js"
-  )
-    
+    "python" -> "py",
+    "python3" -> "py3",
+    "ruby" -> "rb",
+    "perl" -> "pl",
+    "javascript" -> "js"
+  )    
     
   def message(channel:Channel, message:String) {
     message match {
@@ -37,14 +36,13 @@ class Run extends Module with SimpleMessage {
     )
 
     Http(url(api) <<? params >- { response =>
-	  val json = JSON.parseFull(response).get.asInstanceOf[Map[String, Any]]
-	  val error = json("stderr").asInstanceOf[String]
-	  val output = json("stdout").asInstanceOf[String]
-	   
-	  if(!error.isEmpty)
-	    channel.say(Colors.RED + error.lines.toList.last)
-	  else if (!output.isEmpty)
-	    channel.say(Colors.GREEN + output.lines.toList.head)
-	})
+      val json = JSON.parseFull(response).get.asInstanceOf[Map[String, Any]]
+      val error = json("stderr").asInstanceOf[String]
+      val output = json("stdout").asInstanceOf[String]
+      if(!error.isEmpty)
+        channel.say(Colors.RED + error.lines.toList.last)
+      else if (!output.isEmpty)
+        channel.say(Colors.GREEN + output.lines.toList.head)
+    })
   }
 }
