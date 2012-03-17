@@ -8,7 +8,7 @@ import dispatch.tagsoup.TagSoupHttp._
 
 class PageTitle extends Module with SimpleMessage {
 
-  val UrlCommand = """.*(?<url>http://[^ ]+).*""".r
+  val UrlCommand = """.*(?<url>https?://[^ ]+).*""".r
   
   def message(channel:Channel, message:String) {
     message match {
