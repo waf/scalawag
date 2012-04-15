@@ -22,7 +22,7 @@ class EventRouter extends Actor with IRCEventListener {
         case e: JoinCompleteEvent =>
           channel = e.getChannel()
         case msg: MessageEvent  => 
-          val futures = modules.foreach(_ ! msg)
+          modules.foreach(_ ! msg)
         case response: String  =>
           channel.say(response)
         case other: IRCEvent => println("EventRouter: " + other)
