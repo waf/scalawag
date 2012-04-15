@@ -4,8 +4,8 @@ import jerklib.Profile
 
 object Scalawag {
 
-  val channel = "#rhblazeix"
-  val nick = "scalawag2"
+  val channel = "#rhnoise"
+  val nick = "scalawag"
   val server = "irc.freenode.net"
   
   def main(args: Array[String]) {
