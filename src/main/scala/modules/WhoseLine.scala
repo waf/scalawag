@@ -14,14 +14,10 @@ class WhoseLine extends Module with SimpleMessage {
   val SaveLine = """!line (?<line>.+)""".r
   val DropLine = """!dropline (?<line>.+)""".r
   
-  def message(channel:Channel, message:String) {
-    val response = message match {
-      case SaveLine(line) => save(line)
-      case DropLine(line) => drop(line)
-      case GetLine() => getRandomResponse()
-      case _ => ""
-    }
-    channel.say(response)
+  def handlers = {
+    case SaveLine(line) => save(line)
+    case DropLine(line) => drop(line)
+    case GetLine() => getRandomResponse()
   }
   
   def getRandomResponse() = {
@@ -31,24 +27,25 @@ class WhoseLine extends Module with SimpleMessage {
       .skip( Math.random * responses.count intValue)
       .toList;
     
-    randomLine.first("line").toString()
+    sender ! randomLine.first("line").toString()
   }
   
   def save(line: String) = {
+    
     if(invalidResponses.exists(line.matches(_))) {
-      Colors.RED + "rejected"
+      sender ! Colors.RED + "rejected"
     } else {
       responses.save(MongoDBObject("line" -> line))
-      Colors.GREEN + "saved"      
+      sender ! Colors.GREEN + "saved"
     }
-    
   }
   
   def drop(line: String) = {
     val result = responses.remove(MongoDBObject("line" -> line))
+    
     if(result.getN() > 0)
-      Colors.GREEN + "dropped"
+      sender ! Colors.GREEN + "dropped"
     else
-      Colors.RED + "no results dropped"
+      sender ! Colors.RED + "no results dropped"
   }
 }

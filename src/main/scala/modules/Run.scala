@@ -21,14 +21,11 @@ class Run extends Module with SimpleMessage {
     "javascript" -> "js"
   )    
     
-  def message(channel:Channel, message:String) {
-    message match {
-      case RunCommand(language, source) => run(channel, language, source)
-      case _ =>
-    }
+  def handlers = {
+    case RunCommand(language, source) => run(language, source)
   }
   
-  def run(channel: Channel, language:String, source:String) = {
+  def run(language:String, source:String) = {
     
     val params = Map(
       "l" -> friendlyNames.getOrElse(language, language),
@@ -40,9 +37,9 @@ class Run extends Module with SimpleMessage {
       val error = json("stderr").asInstanceOf[String]
       val output = json("stdout").asInstanceOf[String]
       if(!error.isEmpty)
-        channel.say(Colors.RED + error.lines.toList.last)
+        sender ! Colors.RED + error.lines.toList.last
       else if (!output.isEmpty)
-        channel.say(Colors.GREEN + output.lines.toList.head)
+        sender ! Colors.GREEN + output.lines.toList.head
     })
   }
 }

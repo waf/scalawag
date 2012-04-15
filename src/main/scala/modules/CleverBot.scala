@@ -18,14 +18,11 @@ class CleverBot extends Module with SimpleMessage {
   
   val apiUrl =  "http://cleverbot.com/webservicemin"
     
-  def message(channel: Channel, message: String) {
-    val response = message match {
-      case MessageToMe(text) => respond(channel, text) 
-      case _ => ""
-    }
+  def handlers = {
+    case MessageToMe(text) => respond(text)
   }
   
-  def respond(channel: Channel, message: String) {
+  def respond(message: String) {
     val http = new Http
     var request = url(apiUrl)
     val handler = request >>> System.out
@@ -36,16 +33,16 @@ class CleverBot extends Module with SimpleMessage {
     data = collapse(CleverBot.postData)
     
     Http(request << data >- { response =>
-	  val parsed = response.split('\r')
-	  val answer = parsed(0)
-	  channel.say(answer.replace("Cleverbot", Scalawag.nick))
-	  
-	  // i sure hope we never get a malformed response...
-	  CleverBot.postData("sessionid") = parsed(1)
-	  CleverBot.postData("prevref") = parsed(10)
-	  pushHistory(message)
-	  pushHistory(answer)
-	})
+  	  val parsed = response.split('\r')
+  	  val answer = parsed(0)
+  	  sender ! answer.replace("Cleverbot", Scalawag.nick)
+  	  
+  	  // i sure hope we never get a malformed response...
+  	  CleverBot.postData("sessionid") = parsed(1)
+  	  CleverBot.postData("prevref") = parsed(10)
+  	  pushHistory(message)
+  	  pushHistory(answer)
+  	})
   }
   
   def md5(str: String) = {
@@ -66,29 +63,29 @@ class CleverBot extends Module with SimpleMessage {
 }
 
 object CleverBot {
-    val postData = new LinkedHashMap() += (
-      "stimulus" -> "",
-	  "start" -> "y",
-	  "sessionid" -> "",
-	  "vText8" -> "",
-	  "vText7" -> "",
-	  "vText6" -> "",
-	  "vText5" -> "",
-	  "vText4" -> "",
-	  "vText3" -> "",
-	  "vText2" -> "",
-	  "icognoid" -> "wsf",
-	  "icognocheck" -> "",
-	  "fno" -> "0",
-	  "prevref" -> "",
-	  "emotionaloutput" -> "",
-	  "emotionalhistory" -> "",
-	  "asbotname" -> "",
-	  "ttsvoice" -> "",
-	  "typing" -> "",
-	  "lineref" -> "",
-	  "sub" -> "Say",
-	  "islearning" -> "1",
-	  "cleanslate" -> "false"
+  val postData = new LinkedHashMap() += (
+    "stimulus" -> "",
+    "start" -> "y",
+    "sessionid" -> "",
+    "vText8" -> "",
+    "vText7" -> "",
+    "vText6" -> "",
+    "vText5" -> "",
+    "vText4" -> "",
+    "vText3" -> "",
+    "vText2" -> "",
+    "icognoid" -> "wsf",
+    "icognocheck" -> "",
+    "fno" -> "0",
+    "prevref" -> "",
+    "emotionaloutput" -> "",
+    "emotionalhistory" -> "",
+    "asbotname" -> "",
+    "ttsvoice" -> "",
+    "typing" -> "",
+    "lineref" -> "",
+    "sub" -> "Say",
+    "islearning" -> "1",
+    "cleanslate" -> "false"
   )
 }

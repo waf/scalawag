@@ -5,10 +5,12 @@ import jerklib.events._
 import scala.actors.Actor
 import jerklib.Session
 import jerklib.events.TopicEvent
+import jerklib.Channel
 
 class EventRouter extends Actor with IRCEventListener {
 
   val modules = ModuleLoader.getModules().map(m => m.start())
+  var channel:Channel = null
   
   def receiveEvent(ev: IRCEvent) = this ! ev
   
@@ -16,9 +18,14 @@ class EventRouter extends Actor with IRCEventListener {
     loop {
       react {
         case e: ConnectionCompleteEvent =>
-          Scalawag.initialChannels.foreach(e.getSession().join(_))
+          e.getSession().join(Scalawag.channel)
+        case e: JoinCompleteEvent =>
+          channel = e.getChannel()
         case msg: MessageEvent  => 
-          modules.foreach(mod => mod ! msg)
+          val futures = modules.foreach(_ ! msg)
+        case response: String  =>
+          channel.say(response)
+        case other: IRCEvent => println("EventRouter: " + other)
       }
     }
   }

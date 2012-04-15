@@ -8,10 +8,12 @@ import jerklib.Channel
  */
 trait SimpleMessage extends Module {
   
-  def message(channel: Channel, message: String)
-  
+  def handlers: PartialFunction[String, Unit]
+    
   def commands = {
-    case msg : MessageEvent =>
-      message(msg.getChannel(), msg.getMessage())
+    case m : MessageEvent =>
+      val msg = m.getMessage()
+      if(handlers.isDefinedAt(msg))
+        handlers(msg)
   }
 }
