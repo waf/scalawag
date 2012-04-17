@@ -1,4 +1,5 @@
 package modules
+import scala.util.Random
 import bot.Module
 import bot.SimpleMessage
 import jerklib.Channel
@@ -8,6 +9,7 @@ import com.mongodb.casbah.Imports._
 class WhoseLine extends Module with SimpleMessage {
 
   val responses = MongoConnection()("WhoseLine")("responses")
+  val random = new Random()
   val invalidResponses = List("""!.*""", """\..*""")
   
   val GetLine = """(?i).*you know what they say about .*""".r
@@ -21,17 +23,15 @@ class WhoseLine extends Module with SimpleMessage {
   }
   
   def getRandomResponse() = {
-    
     val randomLine = responses.find()
       .limit(1)
-      .skip( Math.random * responses.count intValue)
+      .skip(random.nextInt(responses.count.intValue))
       .toList;
     
     sender ! randomLine.first("line").toString()
   }
   
   def save(line: String) = {
-    
     if(invalidResponses.exists(line.matches(_))) {
       sender ! Colors.RED + "rejected"
     } else {
@@ -42,7 +42,6 @@ class WhoseLine extends Module with SimpleMessage {
   
   def drop(line: String) = {
     val result = responses.remove(MongoDBObject("line" -> line))
-    
     if(result.getN() > 0)
       sender ! Colors.GREEN + "dropped"
     else
