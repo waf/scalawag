@@ -13,14 +13,12 @@ class Number extends Module with SimpleMessage {
   
   def handlers = {
     case Number(n) => getNumber(n)
-    case Random() => getNumber("random") // haha latin
+    case Random() => getNumber("random")
   }
   
   def getNumber(n:String) {
-    makeRequest(api + n)
-  }
-  
-  def makeRequest(requestUrl:String) = {
+    val requestUrl = api + n
+    
     Http(url(requestUrl) >- { response =>
       sender ! Colors.GREEN + response
     })
