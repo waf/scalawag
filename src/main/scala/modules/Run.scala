@@ -18,7 +18,8 @@ class Run extends Module with SimpleMessage {
     "python3" -> "py3",
     "ruby" -> "rb",
     "perl" -> "pl",
-    "javascript" -> "js"
+    "javascript" -> "js",
+    "haskell" -> "hs"
   )    
     
   def handlers = {
